@@ -1,0 +1,142 @@
+AUDIO NOVELA STUDIO 1.1.7
+=======================
+
+WINDOWS
+  Instalar / actualizar: doble clic en COMPILAR.bat. Crea AudioNovelaStudio.exe, el acceso directo
+  y el instalador Instalar_AudioNovelaStudio_(versión).exe para otras PC (la primera vez instala Inno Setup).
+
+  OTRA PC: copia solo Instalar_AudioNovelaStudio_(versión).exe y ábrelo. No pide Python ni permisos de
+  administrador; deja el programa en el menú Inicio y, si quieres, en el escritorio. Se desinstala
+  desde Configuración > Aplicaciones. Windows 10 u 11 de 64 bits. Si sale «Windows protegió tu PC»,
+  pulsa «Más información» > «Ejecutar de todas formas». Los audios se guardan en Música\AudioNovelaStudio.
+  1. Escribe o pega en el editor, o arrastra un documento a la ventana: TXT, MD, DOCX, ODT, RTF,
+     EPUB, FB2, HTML, PDF o subtítulos. El formato se limpia solo. Sin límite de palabras.
+  2. Kuon IA lee la historia y reparte las voces sola. Si duda de quién habla, lo lee el narrador
+     (puedes ajustar ese nivel en la pestaña IA).
+  3. ▶ escucha desde el cursor hasta el final; «Todo» desde el inicio. Se va generando mientras
+     suena, así que puedes oír la obra completa antes de guardar.
+  4. GENERAR AUDIO FINAL: reutiliza lo que ya escuchaste (caché), así que es casi instantáneo.
+  5. Clic derecho en un diálogo > «Asignar este diálogo a». Kuon IA aprende de cada corrección:
+     apodos (Mefisto = Mefistófeles), géneros, palabras que no son personajes, epítetos
+     («el demonio» = Mefistófeles) y verbos de habla nuevos. Todo queda en la pestaña IA.
+  6. Emociones: cada frase se lee con el tono que pide el texto (grito, susurro, miedo, ternura,
+     enojo, duda, sorpresa…). La fuerza se ajusta en Voz > «Intensidad de las emociones».
+  7. Voz > «Idioma de la narración»: latino neutro, México, Colombia, Perú, rioplatense, Chile,
+     España u otro idioma. Al elegirlo se reparten las mejores voces de ese acento.
+  8. Dicción: lista los nombres que una voz podría leer raro (Lovegod, Nightwolf…). Para cada uno
+     eliges «Como se escribe», «En inglés» o «Sin tocar» y lo pruebas con ▶. Se guarda por obra.
+  9. Si Kuon IA duda del género de un personaje, su tarjeta sale en ámbar con «¿Mujer u hombre?».
+ 10. Línea de tiempo (debajo del espectro): clic en cualquier punto para escuchar desde ahí.
+     Lo ya generado se ve brillante, lo que falta tenue y lo que cambió con una marca ámbar.
+     «Cambios» salta a cada parte cambiada. Al guardar solo se genera lo que falta.
+ 11. Clic derecho en un diálogo > «Cómo lo dice»: susurro, grito, ternura… y se oye al momento.
+
+HERRAMIENTAS DEL EDITOR (PC: «Borrar todo» y «☰ Más»; teléfono: botón «⋯» al leer)
+  Ctrl+N borra todo y empieza un documento nuevo (Ctrl+Z lo recupera). Ctrl+A selecciona todo.
+  Ctrl+F / Ctrl+H / F3: buscar, buscar y reemplazar, siguiente. F7: continuar donde lo dejaste.
+  F8: lee en voz alta lo que copiaste en cualquier programa. Ctrl+rueda: tamaño de la letra.
+  «☰ Más» también tiene los documentos abiertos recientemente y Dictar (Win+H, dictado de Windows).
+  Voz > «Fuente de voces»: Automático, Microsoft o Sin internet. Sin internet usa «Kuon natural · México»,
+  la misma voz del teléfono (carpeta «voz» junto al programa: no la borres).
+  Exportar > «Convertir varios documentos»: un audio por cada capítulo o bloque que elijas.
+
+NOVEDADES 1.1.7 (solo en la PC que tiene ComfyUI en D:\IA)
+  Exportar > Fondo > «Imágenes con IA (por capítulo)»: cada capítulo con su propia imagen dibujada por tu IA,
+  con zoom lento y fundido. Elige el estilo (Anime, realista…) y la calidad en la fila «IA».
+  Botón «IA» junto a la portada: crea la portada describiéndola en español.
+  App «Estudio de Imágenes» en el escritorio para crear cualquier imagen.
+  Modelo «Automático»: tu IA lee lo que pides y elige (anime -> Animagine; fotos, arte y texto -> Z-Image).
+  Puedes elegir el modelo a mano. Más medidas (3:4, 2:3, 21:9…) y tamaño personalizado.
+  En otra PC: Exportar > «✨ Activar imágenes con IA…» explica qué se baja, cuánto pesa y lo instala
+  todo con un botón (hace falta una tarjeta NVIDIA de 4 GB o más; mejor 6 GB).
+
+NOVEDADES 1.1.6
+  La revisión de subtítulos con IA ya no se queda pegada: solo revisa las dudas importantes (máx. 250).
+  Con Ollama usa un modelo que quepa en tu tarjeta: qwen3:4b-instruct (rápido) o gemma4:e4b (mejor).
+  La IA ya no puede estropear palabras que se oyeron bien.
+
+NOVEDADES 1.1.5
+  «Revisar subtítulos» aguanta videos de horas (lista única; abajo editas el elegido, Enter pasa al siguiente).
+  Subtítulos mucho más rápidos con tarjeta NVIDIA («Usar mi tarjeta NVIDIA»: la primera vez baja 553 MB + 1,6 GB).
+  Las dudas se pueden revisar con Ollama en tu PC (sin internet). Probado con 500 000 palabras.
+
+NOVEDADES 1.1.4 (PC)
+  Exportar › «🎬 Subtitular mi video (sin internet)»: eliges el video con tu voz y salen .srt y .vtt con el tiempo
+  exacto. Tres modos: la app escribe el texto (Whisper, ~1 min por minuto de video), tu guion (el más exacto) o
+  rápido. La primera vez se bajan los reconocedores (40 MB + 375 MB). Tu IA puede revisar solo las dudas.
+  Luego se abre «Revisar subtítulos»: ▶ escucha, inicio/fin − + mueven 0,1 s, y se puede corregir el texto.
+  Video MP4: fondo animado (Estrellas, Lluvia, Brasas, Neón) o tu portada, con subtítulos, nombre de quien
+  habla y versión vertical para Shorts. Necesita FFmpeg.
+
+NOVEDADES 1.1.3
+  La línea de tiempo empieza en la frase exacta que tocas. Botón «🎙 Narrador grave» (pestaña Voz).
+  Se corrigió el error de «mp4» al terminar «Generar audio final».
+
+NOVEDADES 1.1.2
+  Línea de tiempo nueva (arrastra el punto para saltar). En el teléfono la parte de abajo ocupa menos.
+  Teléfono: anterior, siguiente y ⭐ Marcar desde la notificación y los auriculares. Agitar = +10 min de
+  temporizador (apagado por defecto: ⋯ › Temporizador).
+
+NOVEDADES 1.1.1 (PC y teléfono)
+  ∑ Fórmulas: Automático (solo las frases con fórmulas), Siempre o Nunca. PC: botón ∑ de la barra y clic derecho ›
+  «Cómo se leerá esto». Teléfono: Ajustes o ⋯ › Fórmulas; toca un párrafo para ver «Se leerá así».
+  ▶ sigue donde te quedaste o empieza desde el inicio si el texto es nuevo.
+  Teléfono: barra de arriba fija y botón 📋 (reemplazar por lo copiado, añadir al final, borrar; todo se deshace).
+  IA: al pegar la clave aparecen los modelos solos. 🌙 Temporizador para dormir y 🎨 temas de lectura
+  (PC: ☰ Más; teléfono: ⋯). La posición de escucha se guarda cada 15 segundos.
+
+NOVEDADES 1.1.0: MODO ESTUDIO (PC y teléfono)
+  Para apuntes, libros y trabajos de la universidad. Activo por defecto (pestaña IA en PC, Ajustes en el teléfono):
+  - Fórmulas en voz, en español. Mejor desde Word (ecuaciones) o LaTeX (.tex); desde PDF puede fallar.
+  - Salta citas [12] y (Autor, 2020) y no lee la bibliografía.
+  - Tablas de Word fila por fila.
+  - PDF escaneados: en PC con el OCR de Windows (sin internet; también fotos .jpg/.png). Si falta, actívalo en
+    Configuración > Hora e idioma > Idioma > Español > Opciones > Reconocimiento óptico de caracteres.
+    En el teléfono lo hace tu IA (Ajustes > IA): se envían las páginas a ese servicio.
+  - ☰ Más > «🔖 Marcar lo que suena» (Ctrl+B) y «📝 Marcadores y notas» (F9): apuntes .md o tarjetas Anki.
+  - ☰ Más > «🧠 Preguntas de repaso»: tu IA hace preguntas del capítulo; cada una trae su cita para escucharla.
+    «Escuchar y luego preguntar» = pausa y responde.
+
+NOVEDADES 1.0.9 (PC y teléfono)
+  Reparto > «🔍 Revisar dudosos»: los diálogos en que Kuon IA dudó, uno por uno, con su contexto. Eliges quién
+  lo dice (en PC también con las teclas 1-9) y Kuon IA aprende. En el texto quedan subrayados en ámbar.
+  «✨ Pedir ayuda a la IA»: opcional, con tu clave (PC: la del Asistente; teléfono: Ajustes > IA para diálogos
+  dudosos). Solo se envían los diálogos dudosos y tú decides qué sugerencias aceptar.
+  Ajustes/IA: «No leer notas del autor» (activado) y «No leer texto entre [corchetes]» (desactivado).
+  Aviso «suena casi igual que…» en las tarjetas. Dicción > paquete por fandom (.kuon.json).
+  PC: Exportar > «Video MP4 para YouTube» (portada, título y onda de audio). Necesita FFmpeg; si falta, la app
+  ofrece instalarlo con winget (FFmpeg es gratis, de gyan.dev, licencia GPL; no viene dentro del programa).
+
+DICCIONARIOS DE KUON IA (kuon_dict.json, no lo borres)
+  Nombres con género: 9.700 nombres (INE de España, lista marcboquet/spanish-names) más nombres
+  japoneses, mitológicos y de anime. Palabras comunes: 48.000 (wordfreq y an-array-of-spanish-words),
+  para no tomar «Simplemente» o «Repitió» por personajes. Verbos de habla: 700 formas (rezongó,
+  increpó, maldijo). Pronunciación inglesa: 33.000 palabras (CMUdict) para la pestaña Dicción.
+
+KUON IA ENTRENADA CON TUS OBRAS
+  kuon_base.json guarda lo aprendido de D:\FANFICS (personajes, apodos, forma de hablar).
+  No lo borres: la app lo carga sola. Para volver a entrenar con obras nuevas, pídelo.
+
+AYUDA
+  Botón ? arriba a la derecha: qué hace cada opción. El tutorial sale la primera vez
+  (también en la pestaña IA > Tutorial).
+
+VERSIONES
+  La versión está en version.json (carpeta Android\codigo_fuente_android.zip) y se ve en el título.
+  Cada actualización muestra sus Novedades. Tus datos se convierten solos al formato nuevo.
+  Pruebas de Kuon IA (carpeta pruebas): python -m unittest discover pruebas
+
+ANDROID (carpeta Android)
+  AudioNovelaStudio.apk: cópiala al teléfono e instálala (permite «instalar apps desconocidas»).
+  Con datos o wifi usa las voces de Microsoft. Sin internet usa «Kuon natural · México», una voz
+  natural que viene dentro de la APK (Piper es_MX claude, licencia Apache 2.0, motor sherpa-onnx).
+  Necesita un teléfono de 64 bits (casi todos desde 2017); en uno de 32 bits Android no la instala.
+  Dictado: botón «Dictar» en la pantalla de inicio y en el editor. Usa el reconocimiento de voz
+  del teléfono (Google); pide permiso de micrófono la primera vez.
+  Segundo plano: la narración sigue con la pantalla apagada o con un juego abierto. En Voz >
+  «En segundo plano» eliges si sigue encima del otro sonido o se pausa, y el refuerzo de volumen.
+  La APK va protegida: el código está cifrado y una copia re-firmada por otra persona no abre.
+  firma_release.jks: NO la borres. Las actualizaciones de la app se firman con ella.
+
+Tus ajustes, repartos y lo aprendido se guardan en %APPDATA%\AudioNovelaStudio (Windows)
+y dentro de la app (Android).
