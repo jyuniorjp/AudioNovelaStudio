@@ -271,6 +271,17 @@ def math_speech(t, mode="auto"):
     t = re.sub(r"(?<=\w)_\s*(\([^()]{1,30}\)|\w+)", lambda m: " sub " + m.group(1).strip("()") + " ", t)
     # raíces y fracciones
     t = re.sub(r"√\s*\[(\w+)\]\s*", r" raíz de índice \1 de ", t)
+    if full:
+        # «1/√(LC)»: antes quedaba «1/ raíz de (LC)». La raíz se lee entera y la barra delante es «entre»;
+        # dentro de la raíz, 2-3 letras sueltas pegadas son un producto (LC = L por C)
+        def _root(m):
+            inner = m.group(1).strip()
+            if re.fullmatch(r"[A-Za-zα-ω]{2,3}", inner):
+                inner = " por ".join(inner)
+            return " la raíz de " + inner + " "
+        t = re.sub(r"(?<=[\w)])\s*/\s*(?=√)", " entre ", t)
+        t = re.sub(r"(?<=[\w)])(?=√)", "·", t)                        # «2π√(LC)»: pegado es multiplicación
+        t = re.sub(r"√\s*\(([^()]{1,40})\)", _root, t)
     if not full:                      # en prosa solo las fracciones cortas y claras: «T/µ», «L2/12», «1/2» (no «y/o», ni fechas)
         t = re.sub(r"(?<![\w/])([a-zA-Zα-ωµ]\w?|\d{1,2})\s*/\s*([a-zA-Zα-ωµ]\w?|\d{1,2})(?![\w/])",
                    lambda m: m.group(0) if (m.group(1).lower(), m.group(2).lower()) in (("y", "o"), ("o", "y")) or
