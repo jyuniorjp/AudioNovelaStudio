@@ -3,7 +3,7 @@
 **Convierte tus novelas y fanfics en audiolibros con varias voces, y crea imágenes y miniaturas de YouTube con IA,
 todo en tu PC con Windows.** Hecho en español, para gente que escribe y narra en español.
 
-### [⬇️ Descargar los instaladores (Windows)](https://github.com/jyuniorjp/AudioNovelaStudio/releases/latest)
+### [⬇️ Descargar para Windows y Android](https://github.com/jyuniorjp/AudioNovelaStudio/releases/latest)
 
 ![Audio Novela Studio](docs/audio_novela.png)
 
@@ -41,8 +41,10 @@ Describe en español lo que quieres y tu PC lo dibuja, sin internet y sin pagar 
 1. Descarga los instaladores desde [Releases](https://github.com/jyuniorjp/AudioNovelaStudio/releases/latest).
 2. Ábrelos. No piden permisos de administrador. Si Windows dice «Windows protegió tu PC», pulsa
    **Más información → Ejecutar de todas formas** (pasa con programas nuevos sin firma de pago).
-3. **Audio Novela Studio** funciona enseguida (voces en línea gratis; voces sin internet opcionales).
-4. **Estudio de Imágenes:** la primera vez te muestra qué descarga (motor y modelos), cuánto pesa y para qué
+3. **Android:** descarga `AudioNovelaStudio_1.1.7_Android.apk` en el teléfono, ábrela y permite «instalar apps
+   de origen desconocido» si te lo pide.
+4. **Audio Novela Studio** funciona enseguida (voces en línea gratis; voces sin internet opcionales).
+5. **Estudio de Imágenes:** la primera vez te muestra qué descarga (motor y modelos), cuánto pesa y para qué
    sirve cada parte, y lo instala con un botón.
 
 ### Requisitos
@@ -57,7 +59,7 @@ Describe en español lo que quieres y tu PC lo dibuja, sin internet y sin pagar 
 3. `COMPILAR_IMAGENES.bat` crea `EstudioImagenes.exe` y su instalador.
 
 ## Qué no está en este repositorio
-- La versión de Android (todavía no se publica).
+- El código de la versión de Android (la app sí está para descargar en Releases).
 - Modelos grandes de terceros: la voz neuronal Piper `es_MX-claude-high`
   ([HirCoir/Piper-TTS-Spanish](https://huggingface.co/spaces/HirCoir/Piper-TTS-Spanish), Apache-2.0) va en `voz/`.
 
