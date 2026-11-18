@@ -32,3 +32,6 @@ El Estudio de Imágenes descarga el motor y los modelos la primera vez (te dice 
 - Instaladores y ejecutables compilados.
 
 Más detalles de uso en [LEEME.txt](LEEME.txt) y [LEEME_IMAGENES.txt](LEEME_IMAGENES.txt).
+
+## Licencia
+MIT: puedes usar, copiar y modificar este código mientras mantengas el aviso de autor. Ver [LICENSE](LICENSE). Las fuentes de `fuentes/` usan la licencia SIL OFL 1.1.
