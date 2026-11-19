@@ -56,7 +56,9 @@ Describe en español lo que quieres y tu PC lo dibuja, sin internet y sin pagar 
 ## Compilar desde el código
 1. Python 3.12+ y un entorno `.venv` con `pip install -r requirements.txt`.
 2. `COMPILAR.bat` crea `AudioNovelaStudio.exe` y su instalador (Inno Setup 6).
-3. `COMPILAR_IMAGENES.bat` crea `EstudioImagenes.exe` y su instalador.
+3. El Estudio de Imágenes como app aparte se compila desde su propio proyecto,
+   [jyuniorjp/EstudioImagenes](https://github.com/jyuniorjp/EstudioImagenes) (`COMPILAR_IMAGENES.bat`).
+   Audio Novela Studio lleva el mismo Estudio dentro (portada y fondos del video).
 
 ## Qué no está en este repositorio
 - El código de la versión de Android (la app sí está para descargar en Releases).
