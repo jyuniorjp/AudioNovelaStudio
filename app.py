@@ -26,6 +26,10 @@ from tkinter import filedialog, messagebox
 
 import customtkinter as ctk
 
+import ui_scroll
+
+ui_scroll.install()             # la rueda mueve solo lo que está bajo el ratón (ver ui_scroll.py)
+
 import audio
 import estudio
 import brain
