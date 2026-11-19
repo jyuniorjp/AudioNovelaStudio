@@ -408,10 +408,13 @@ class Studio(AssistantMixin, SubsMixin, Base):
         self.v_mp4 = tk.BooleanVar(value=c.get("mp4", False))
         self.v_cover = tk.StringVar(value=c.get("cover", ""))
         self.v_vbg = tk.StringVar(value=c.get("video_bg", "Estrellas"))
-        self.v_vstyle = tk.StringVar(value=c.get("video_ai_style") if c.get("video_ai_style") in imagen_ia.STYLES
-                                     else "Automático")
-        self.v_vqual = tk.StringVar(value=c.get("video_ai_engine") if c.get("video_ai_engine") in imagen_ia.ENGINES
-                                    else imagen_ia.AUTO)
+        # una sola vez: estilo y modelo del video vuelven a «Automático» (ahora salen del prompt, como en el Estudio);
+        # después, lo que elijas a mano se respeta
+        auto_v2 = bool(c.get("video_auto_v2"))
+        self.v_vstyle = tk.StringVar(value=c.get("video_ai_style") if auto_v2 and c.get("video_ai_style") in
+                                     imagen_ia.STYLES else "Automático")
+        self.v_vqual = tk.StringVar(value=c.get("video_ai_engine") if auto_v2 and c.get("video_ai_engine") in
+                                    imagen_ia.ENGINES else imagen_ia.AUTO)
         self.v_vsubs = tk.BooleanVar(value=c.get("video_subs", True))
         self.v_vnames = tk.BooleanVar(value=c.get("video_names", True))
         self.v_vvert = tk.BooleanVar(value=c.get("video_vertical", False))
@@ -842,6 +845,8 @@ class Studio(AssistantMixin, SubsMixin, Base):
         # fila de estilo y modelo de las imágenes con IA (solo si esta PC tiene el motor)
         self._ia_arow = ctk.CTkFrame(sc, fg_color="transparent")
         ctk.CTkLabel(self._ia_arow, text="IA", font=font(12), text_color=MUTED).pack(side="left")
+        # por defecto todo automático (el estilo y el modelo salen del prompt, como en el Estudio de Imágenes);
+        # si eliges algo a mano, se respeta
         ctk.CTkOptionMenu(self._ia_arow, values=list(imagen_ia.STYLES), variable=self.v_vstyle, width=150,
                           fg_color=SURF3, button_color=SURF3, button_hover_color=CYAN_D, dropdown_fg_color=SURF2,
                           command=lambda _v: self._autosave()).pack(side="left", padx=(8, 0))
@@ -849,6 +854,11 @@ class Studio(AssistantMixin, SubsMixin, Base):
                                              fg_color=SURF3, button_color=SURF3, button_hover_color=CYAN_D,
                                              dropdown_fg_color=SURF2, command=lambda _v: self._autosave())
         self._ia_engmenu.pack(side="left", padx=(8, 0))
+        self._btn(self._ia_arow, "✍ Ejemplos", self.open_prompt_examples, width=90).pack(side="left", padx=(8, 0))
+        self.v_thumbauto = tk.BooleanVar(value=self.cfg.get("auto_thumb", False))
+        ctk.CTkSwitch(sc, text="🎬 Miniatura automática (título de la obra + capítulo, como tus ejemplos)",
+                      variable=self.v_thumbauto, progress_color=CYAN_D, font=font(12),
+                      command=self._autosave).pack(anchor="w", padx=4, pady=(4, 2))
         # si no lo tiene: botón que explica qué se descarga, cuánto pesa, y lo instala
         self._ia_setup = self._btn(sc, "✨ Activar imágenes con IA (portadas y fondos por capítulo)…",
                                    self.open_ia_setup)
@@ -1120,6 +1130,7 @@ class Studio(AssistantMixin, SubsMixin, Base):
             mp4=self.v_mp4.get(), cover=self.v_cover.get(), video_bg=self.v_vbg.get(), video_subs=self.v_vsubs.get(),
             video_ai_style=self.v_vstyle.get(), video_ai_engine=self.v_vqual.get(),
             video_names=self.v_vnames.get(), video_vertical=self.v_vvert.get(),
+            auto_thumb=bool(getattr(self, "v_thumbauto", None) and self.v_thumbauto.get()), video_auto_v2=True,
             workers=int(self.v_workers.get()), ollama_model=self.v_model.get(),
             threshold=round(self.v_threshold.get(), 2),
             emotion_intensity=st.emotion_intensity, variant=self.v_variant.get(), schema=2,
@@ -4270,6 +4281,7 @@ class Studio(AssistantMixin, SubsMixin, Base):
         vopt = dict(bg=self.v_vbg.get(), subs=self.v_vsubs.get(), names=self.v_vnames.get(), vertical=self.v_vvert.get(),
                     colors=dict(self.char_color), chapters=[c[0] for c in self.chapters],
                     ai_style=self.v_vstyle.get(), ai_engine=self.v_vqual.get())
+        thumb_auto = bool(getattr(self, "v_thumbauto", None) and self.v_thumbauto.get())
         workers = int(self.v_workers.get())
         title = os.path.splitext(self.doc_key)[0] if self.doc_path else "Audionovela"
         vopt["doc_title"] = title
@@ -4299,6 +4311,8 @@ class Studio(AssistantMixin, SubsMixin, Base):
                             audio.write_srt(res, os.path.splitext(path)[0] + ".srt")
                         if want_mp4:
                             want_mp4 = self._make_video(path, ct, cover, res, cc, vopt)
+                        if thumb_auto:
+                            self._make_thumb(path, title, [ct], cc, vopt)
                         done += len(cc)
                         outs.append((path, cc, res))
                     last = outs[-1] if outs else (None, None, None)
@@ -4316,6 +4330,8 @@ class Studio(AssistantMixin, SubsMixin, Base):
                                            title, st.cast)
                     if want_mp4:
                         self._make_video(target, title, cover, res, chunks, vopt)
+                    if thumb_auto:
+                        self._make_thumb(target, title, [c[0] for c in chapters], chunks, vopt)
                     self.after(0, lambda: self._finished(target, chunks, res, f"Guardado: {os.path.basename(target)}",
                                                          time.time() - t0))
             except audio.Cancelled:
@@ -4414,23 +4430,55 @@ class Studio(AssistantMixin, SubsMixin, Base):
         story = vopt.get("doc_title") or title
         for t0, texts, _ch in self._ai_segments(res, chunks):
             txt = " ".join(texts)
-            key = hashlib.sha1(f"{eng}|{style}|{w}x{h}|{story}|{txt[:3000]}".encode("utf-8")).hexdigest()[:20]
+            key = hashlib.sha1(f"poster2|{eng}|{style}|{w}x{h}|{story}|{txt[:3000]}".encode("utf-8")).hexdigest()[:20]
             p = os.path.join(d, key + ".png")
             out.append((t0, p))
             if not os.path.isfile(p):
                 todo.append((p, txt))
         if not todo:
             return out
-        model = imagen_ia.ollama_model()
+        model = imagen_ia.ensure_ollama()
+        # prompts «estilo ChatGPT» (como tus ejemplos): los escribe tu API si está lista; si no, tu IA local
+        write, who = self._prompt_writer()
+        bible = {}
+        if write:
+            prog(f"{who}: ficha de los personajes de la obra", 0)
+            bfile = os.path.join(d, "ficha_" + hashlib.sha1(story.encode("utf-8")).hexdigest()[:12] + ".json")
+            try:
+                with open(bfile, encoding="utf-8") as fh:
+                    bible = json.load(fh)
+            except Exception:
+                try:
+                    sample = " ".join(" ".join(t) for _t0, t, _c in self._ai_segments(res, chunks)[:4])
+                    bible = imagen_ia.story_bible(sample, story, write)
+                    with open(bfile, "w", encoding="utf-8") as fh:
+                        json.dump(bible, fh, ensure_ascii=False, indent=1)
+                except Exception as e:
+                    self._log_error(e)
+        z = "Alta calidad (Z-Image Turbo)"
         plans = []
         for k, (_p, txt) in enumerate(todo):
             if self.cancel.is_set():
                 raise RuntimeError("CANCELLED")
-            prog("Tu IA imagina las escenas", k / len(todo))
-            # sin título: lo desvía (p. ej. «Gamers» metía mandos de consola)
-            sp = imagen_ia.scene_prompt(txt, "", model) if model else ""
-            sp = sp or "atmospheric cinematic background scene, beautiful landscape, soft light, no people"
-            # el mismo «cerebro» del Estudio: elige motor (anime, foto, arte) y le escribe en su idioma (etiquetas o frases)
+            prog(f"{who or 'Tu IA'} escribe el prompt de la escena {k + 1} de {len(todo)}", k / len(todo))
+            pp = ""
+            if write:
+                try:
+                    pp = imagen_ia.poster_prompt(txt, story, bible, write, bool(vopt.get("vertical")))
+                except Exception as e:
+                    self._log_error(e)
+            if pp and (eng == imagen_ia.AUTO and z in engines or eng == z):
+                # prompt largo y detallado: Z-Image lo entiende entero (Animagine solo lee etiquetas)
+                dp = imagen_ia.drawable(pp)
+                if style not in ("", "Automático", "Sin estilo") and imagen_ia.STYLES.get(style):
+                    dp += " Art style: " + imagen_ia.STYLES[style] + "."      # el estilo que elegiste a mano manda
+                plans.append({"engine": z, "prompt": dp, "full": pp,
+                              "negative": "blurry, low quality, deformed, bad anatomy, "
+                              "extra fingers, text, letters, title, watermark, signature, logo"})
+                continue
+            # sin escritor (o motor elegido a mano): el camino de siempre
+            sp = (pp or (imagen_ia.scene_prompt(txt, "", model) if model else "") or
+                  "atmospheric cinematic background scene, beautiful landscape, soft light, no people")
             plans.append(imagen_ia.plan(sp, style, eng, model=model, have=engines, already_english=True))
         imagen_ia.free_ollama_gpu()
         if imagen_ia.start(say=lambda m, f: prog(m.rstrip("…"), f), cancel=self.cancel):
@@ -4440,10 +4488,72 @@ class Studio(AssistantMixin, SubsMixin, Base):
                                say=lambda m, f, k=k: prog(f"Dibujando fondo {k + 1} de {len(todo)}", (k + f) / len(todo)))
             try:
                 with open(p[:-4] + ".txt", "w", encoding="utf-8") as fh:
-                    fh.write(pl["engine"] + " | " + pl["prompt"])
+                    fh.write(pl["engine"] + " | " + pl.get("full", pl["prompt"]))
             except OSError:
                 pass
         return out
+
+    def _prompt_writer(self):
+        """Quién escribe los prompts de las imágenes: tu API (Gemini, Groq…) si está configurada; si no, tu IA local
+        (Qwen). Devuelve (función(sistema, usuario) -> texto, nombre) o (None, "")."""
+        try:
+            c = self._ai_conf()
+            if (c.get("key") or not c.get("needs_key")) and c.get("model") and c.get("url") and \
+                    not c["provider"].startswith("Ollama"):
+                def write(system, user, c=c):
+                    return ai.chat(c["url"], c["key"], c["model"],
+                                   [{"role": "system", "content": system}, {"role": "user", "content": user}],
+                                   temperature=0.6, timeout=180, fallback=c.get("fallback", ""))
+                return write, "Tu API (" + c["provider"].split(" (")[0] + ")"
+        except Exception as e:
+            self._log_error(e)
+        w = imagen_ia.local_writer()
+        return (w, "Tu IA (Qwen)") if w else (None, "")
+
+    def _make_thumb(self, audio_path, title, chapter_names, chunks, vopt):
+        """Miniatura automática junto al audio/video: «<nombre>_miniatura.png». Si falla, se avisa y se sigue."""
+        import miniatura_auto
+        out = os.path.splitext(audio_path)[0] + "_miniatura.png"
+
+        def say(msg, f=None):
+            self.after(0, lambda: (self.status(f"{msg} {os.path.basename(out)}"),
+                                   self.pb.set(f) if f is not None else None))
+        try:
+            if not imagen_ia.available_engines():
+                raise RuntimeError("falta el motor de imágenes")
+            write, who = self._prompt_writer()
+            if not write:
+                raise RuntimeError("no hay quién escriba el prompt (configura tu API o abre Ollama)")
+            story = vopt.get("doc_title") or title
+            text = " ".join(c.text for c in (chunks or [])[:60])[:6000]
+            say(f"{who} escribe el prompt de la miniatura…", 0)
+            bible = imagen_ia.story_bible(text, story, write)
+            label = miniatura_auto.chapter_label(chapter_names) if len(chapter_names) else ""
+            if imagen_ia.start(say=lambda m, f: say(m, f), cancel=self.cancel):
+                self._ia_started = True
+            miniatura_auto.auto_cover(text, story, label, write, bible, out, say=say, cancel=self.cancel,
+                                      vertical=bool(vopt.get("vertical")))
+            self.after(0, lambda: self.status("Miniatura lista: " + os.path.basename(out)))
+        except RuntimeError as e:
+            if str(e) == "CANCELLED":
+                raise audio.Cancelled()
+            self._log_error(e)
+            self.after(0, lambda e=e: self.status(f"No se pudo crear la miniatura ({e}); el audio está listo"))
+        except Exception as e:
+            self._log_error(e)
+            self.after(0, lambda e=e: self.status(f"No se pudo crear la miniatura ({e}); el audio está listo"))
+
+    def open_prompt_examples(self):
+        """Abre tus ejemplos de prompts para editarlos (la IA imita su estilo en las imágenes del video)."""
+        if not os.path.isfile(imagen_ia.EXAMPLES_FILE):
+            os.makedirs(os.path.dirname(imagen_ia.EXAMPLES_FILE), exist_ok=True)
+            with open(imagen_ia.EXAMPLES_FILE, "w", encoding="utf-8") as fh:
+                fh.write("# Pega aquí tus prompts de ejemplo; sepáralos con una línea =====\n=====\n" +
+                         imagen_ia._SKELETON + "\n")
+        try:
+            os.startfile(imagen_ia.EXAMPLES_FILE)
+        except Exception as e:
+            self._log_error(e)
 
     def _make_video(self, audio_path, title, cover, res=None, chunks=None, vopt=None):
         """Crea el MP4 junto al audio. Devuelve False si no hay FFmpeg (para no volver a intentarlo)."""
