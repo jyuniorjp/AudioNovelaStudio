@@ -3,7 +3,7 @@ from PyInstaller.utils.hooks import collect_data_files
 from PyInstaller.utils.hooks import collect_submodules
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('icon.ico', '.'), ('kuon_base.json', '.'), ('kuon_dict.json', '.'), ('img', 'img'), ('fuentes', 'fuentes'), ('quitar_fondo.py', '.'), ('estudio_imagenes.ico', '.'), ('ejemplos_ia', 'ejemplos_ia')]
+datas = [('icon.ico', '.'), ('kuon_base.json', '.'), ('kuon_dict.json', '.'), ('img', 'img'), ('fuentes', 'fuentes'), ('ui_iconos', 'ui_iconos'), ('quitar_fondo.py', '.'), ('estudio_imagenes.ico', '.'), ('ejemplos_ia', 'ejemplos_ia')]
 binaries = []
 hiddenimports = ['asr_worker', 'imagenes_app', 'instalar_ia', 'editor_miniaturas', 'miniaturas', 'web_ayuda', 'miniatura_auto', 'websockets.sync.client', '_cffi_backend']
 datas += collect_data_files('certifi')
