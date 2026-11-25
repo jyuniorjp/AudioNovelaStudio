@@ -35,6 +35,10 @@ modelos/
 # copia para el repositorio aparte del Estudio de Imágenes
 publicar/
 
+# instaladores compilados y material de promoción (solo en esta PC)
+instaladores/
+promocion/
+
 # videos de promoción
 *.mp4
 portada_tiktok.png

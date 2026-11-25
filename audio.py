@@ -25,6 +25,7 @@ import edge_tts
 
 import brain
 import estudio
+import hardware
 from docs import clean_for_speech, parse_lexicon, apply_lexicon, pron_rules, apply_pron
 
 SR_TTS = 24000
@@ -334,14 +335,23 @@ def _offline_engine():
             if not v:
                 raise RuntimeError("Falta la carpeta «voz» con la voz natural. Reinstala el programa.")
             model = next(n for n in os.listdir(v) if n.endswith(".onnx"))
-            cfg = sherpa_onnx.OfflineTtsConfig(
-                model=sherpa_onnx.OfflineTtsModelConfig(
-                    vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=os.path.join(v, model),
-                                                               tokens=os.path.join(v, "tokens.txt"),
-                                                               data_dir=os.path.join(v, "espeak-ng-data")),
-                    num_threads=max(1, min(4, (os.cpu_count() or 2) // 2)), provider="cpu"),
-                max_num_sentences=2)
-            _off["tts"] = sherpa_onnx.OfflineTts(cfg)
+
+            def make(provider):
+                return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(
+                    model=sherpa_onnx.OfflineTtsModelConfig(
+                        vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=os.path.join(v, model),
+                                                                   tokens=os.path.join(v, "tokens.txt"),
+                                                                   data_dir=os.path.join(v, "espeak-ng-data")),
+                        num_threads=max(1, min(4, (os.cpu_count() or 2) // 2)), provider=provider),
+                    max_num_sentences=2))
+            # tarjeta dedicada si la hay (cuda / directml); si la librería no la admite, ella misma usa el procesador
+            prov = hardware.onnx_provider()
+            try:
+                _off["tts"] = make(prov)
+            except Exception:
+                if prov == "cpu":
+                    raise
+                _off["tts"] = make("cpu")
         return _off["tts"]
 
 

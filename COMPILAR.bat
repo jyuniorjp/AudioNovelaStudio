@@ -59,7 +59,7 @@ echo [5/6] Compilando AudioNovelaStudio.exe...
 taskkill /im AudioNovelaStudio.exe /f >nul 2>&1
 if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
-"%VPY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name AudioNovelaStudio --icon icon.ico --add-data "icon.ico;." --add-data "kuon_base.json;." --add-data "kuon_dict.json;." --add-data "img;img" --collect-all customtkinter --collect-all tkinterdnd2 --collect-all miniaudio --collect-all sherpa_onnx --collect-all pypdfium2 --collect-all vosk --collect-all faster_whisper --collect-all ctranslate2 --collect-all onnxruntime --collect-all tokenizers --collect-all av --hidden-import asr_worker --hidden-import imagenes_app --hidden-import instalar_ia --hidden-import editor_miniaturas --hidden-import miniaturas --hidden-import web_ayuda --hidden-import miniatura_auto --hidden-import websockets.sync.client --add-data "fuentes;fuentes" --add-data "ui_iconos;ui_iconos" --add-data "quitar_fondo.py;." --add-data "estudio_imagenes.ico;." --add-data "ejemplos_ia;ejemplos_ia" --collect-all pypdfium2_raw --collect-submodules winrt --collect-all winrt --hidden-import _cffi_backend --collect-data certifi app.py >> "%LOG%" 2>&1
+"%VPY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name AudioNovelaStudio --icon icon.ico --add-data "icon.ico;." --add-data "kuon_base.json;." --add-data "kuon_dict.json;." --add-data "img;img" --collect-all customtkinter --collect-all tkinterdnd2 --collect-all miniaudio --collect-all sherpa_onnx --collect-all pypdfium2 --collect-all vosk --collect-all faster_whisper --collect-all ctranslate2 --collect-all onnxruntime --collect-all tokenizers --collect-all av --hidden-import asr_worker --hidden-import narrar --hidden-import hardware --hidden-import imagenes_app --hidden-import instalar_ia --hidden-import editor_miniaturas --hidden-import miniaturas --hidden-import web_ayuda --hidden-import miniatura_auto --hidden-import websockets.sync.client --add-data "fuentes;fuentes" --add-data "ui_iconos;ui_iconos" --add-data "quitar_fondo.py;." --add-data "estudio_imagenes.ico;." --add-data "ejemplos_ia;ejemplos_ia" --collect-all pypdfium2_raw --collect-submodules winrt --collect-all winrt --hidden-import _cffi_backend --collect-data certifi app.py >> "%LOG%" 2>&1
 if not exist "dist\AudioNovelaStudio.exe" (
   echo ERROR: PyInstaller no genero el exe >> "%LOG%"
   echo BUILD_FAIL >> "%LOG%"
@@ -94,14 +94,14 @@ goto :fin_instalador
 "%VPY%" -c "import version;print(version.APP_VERSION['version'])" > "%TEMP%\ans_ver.txt"
 set /p APPVER=<"%TEMP%\ans_ver.txt"
 if not defined APPVER set "APPVER=1.0.0"
-if exist "Instalar_AudioNovelaStudio_%APPVER%.exe" del /q "Instalar_AudioNovelaStudio_%APPVER%.exe"
+if exist "instaladores\Instalar_AudioNovelaStudio_%APPVER%.exe" del /q "instaladores\Instalar_AudioNovelaStudio_%APPVER%.exe"
 "%ISCC%" /Q "/DAppVer=%APPVER%" "instalador\AudioNovelaStudio.iss" >> "%LOG%" 2>&1
-if exist "Instalar_AudioNovelaStudio_%APPVER%.exe" goto :instalador_ok
+if exist "instaladores\Instalar_AudioNovelaStudio_%APPVER%.exe" goto :instalador_ok
 echo    No se pudo crear el instalador. Revisa build_log.txt
 echo INSTALLER_FAIL >> "%LOG%"
 goto :fin_instalador
 :instalador_ok
-echo    Listo: Instalar_AudioNovelaStudio_%APPVER%.exe
+echo    Listo: instaladores\Instalar_AudioNovelaStudio_%APPVER%.exe
 echo INSTALLER_OK >> "%LOG%"
 :fin_instalador
 

@@ -10,6 +10,10 @@ if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[1] == "--asr":
     import asr_worker
     asr_worker.main(sys.argv[2])
     sys.exit(0)
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] in ("--narrar", "--hardware"):
+    # modo de línea de comandos (lo usa Claude): AudioNovelaStudio.exe --narrar historia.txt -o salida.mp3
+    import narrar
+    sys.exit(narrar.main(sys.argv[2:] if sys.argv[1] == "--narrar" else ["--hardware"]))
 
 import bisect
 import dataclasses
@@ -695,6 +699,17 @@ class Studio(AssistantMixin, SubsMixin, Base):
                                command=lambda _v: self._autosave(), selected_color=CYAN_D,
                                selected_hover_color=CYAN_D, unselected_color=SURF2, unselected_hover_color=SURF3,
                                font=font(12)).pack(fill="x", padx=4)
+        self._section(sc, "Procesamiento")
+        hw = ctk.CTkLabel(sc, text="Revisando la tarjeta gráfica…", font=font(11), text_color=MUTED, wraplength=390,
+                          justify="left")
+        hw.pack(anchor="w", padx=4)
+
+        def _hw():
+            import hardware
+            t = hardware.summary() + (". La voz sin internet, los subtítulos y las imágenes la usan solos."
+                                      if hardware.info()["device"] == "gpu" else ".")
+            self.after(0, lambda: hw.winfo_exists() and hw.configure(text=t))
+        threading.Thread(target=_hw, daemon=True).start()
         self._section(sc, "Idioma de la narración")
         self.cb_lang = self._combo(sc, self.v_lang_label, lambda _v: self._lang_changed())
         self.cb_lang.pack(anchor="w", padx=4)

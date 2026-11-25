@@ -787,7 +787,12 @@ def fw_installed():
 
 
 def has_nvidia():
-    """¿Hay una tarjeta NVIDIA? (sin cargar nada de CUDA en la app)."""
+    """¿Hay una tarjeta NVIDIA que usar? (sin cargar nada de CUDA en la app; respeta «device»: cpu)."""
+    try:
+        import hardware
+        return hardware.use_cuda()
+    except Exception:
+        pass
     import shutil
     exe = shutil.which("nvidia-smi") or r"C:\Windows\System32\nvidia-smi.exe"
     if not os.path.isfile(exe):

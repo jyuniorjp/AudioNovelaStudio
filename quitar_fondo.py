@@ -130,7 +130,14 @@ def cut(src, dst, model, white=False, size=1024, screen=""):
     x = x.transpose(2, 0, 1)[None].astype(np.float32)
     so = ort.SessionOptions()
     so.log_severity_level = 3
-    sess = ort.InferenceSession(model, so, providers=["CPUExecutionProvider"])
+    prov = ["CPUExecutionProvider"]
+    if os.environ.get("ANS_DEVICE", "").lower() != "cpu":      # tarjeta si el onnxruntime instalado la trae
+        prov = [p for p in ("CUDAExecutionProvider", "DmlExecutionProvider")
+                if p in ort.get_available_providers()] + prov
+    try:
+        sess = ort.InferenceSession(model, so, providers=prov)
+    except Exception:
+        sess = ort.InferenceSession(model, so, providers=["CPUExecutionProvider"])
     pred = sess.run(None, {sess.get_inputs()[0].name: x})[0][0, 0]
     if birefnet:
         pred = 1.0 / (1.0 + np.exp(-pred))
